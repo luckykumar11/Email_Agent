@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================
+   EMAIL AGENT — THEME TOKENS
+   Light + Dark mode via system preference
+   ============================================ */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  /* ── Surface ── */
+  --tw-bg-main: #F8FAFC;
+  --tw-bg-page: #F1F5F9;
+  --tw-bg-card: #FFFFFF;
+
+  /* ── Sidebar ── */
+  --tw-sidebar: #111827;
+  --tw-sidebar-hover: #1F2937;
+
+  /* ── Primary / Accent ── */
+  --tw-primary: #4F46E5;
+  --tw-primary-hover: #4338CA;
+
+  /* ── Text ── */
+  --tw-text-primary: #111827;
+  --tw-text-secondary: #64748B;
+  --tw-text-muted: #94A3B8;
+
+  /* ── Border ── */
+  --tw-border: #E2E8F0;
+
+  /* ── Status ── */
+  --tw-success: #16A34A;
+  --tw-success-bg: #DCFCE7;
+  --tw-error: #DC2626;
+  --tw-error-bg: #FEE2E2;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --tw-bg-main: #0F172A;
+    --tw-bg-page: #0F172A;
+    --tw-bg-card: #1E293B;
+
+    --tw-sidebar: #020617;
+    --tw-sidebar-hover: #1E293B;
+
+    --tw-primary: #6366F1;
+    --tw-primary-hover: #818CF8;
+
+    --tw-text-primary: #F8FAFC;
+    --tw-text-secondary: #94A3B8;
+    --tw-text-muted: #64748B;
+
+    --tw-border: #334155;
+
+    --tw-success: #22C55E;
+    --tw-success-bg: #052E16;
+    --tw-error: #EF4444;
+    --tw-error-bg: #450A0A;
+  }
+}
+
+@theme inline {
+  --color-background: var(--tw-bg-main);
+  --color-foreground: var(--tw-text-primary);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* ── Gray Scale ── */
+  --color-gray-50: var(--tw-bg-main);
+  --color-gray-100: var(--tw-bg-page);
+  --color-gray-200: var(--tw-border);
+  --color-gray-300: #CBD5E1;
+  --color-gray-400: var(--tw-text-muted);
+  --color-gray-500: var(--tw-text-secondary);
+  --color-gray-600: #475569;
+  --color-gray-700: var(--tw-text-primary);
+  --color-gray-800: var(--tw-sidebar-hover);
+  --color-gray-900: var(--tw-sidebar);
+  --color-gray-950: #020617;
+
+  /* ── Blue → Indigo (Primary) ── */
+  --color-blue-50: #EEF2FF;
+  --color-blue-100: #E0E7FF;
+  --color-blue-200: #C7D2FE;
+  --color-blue-300: #A5B4FC;
+  --color-blue-400: #818CF8;
+  --color-blue-500: var(--tw-primary);
+  --color-blue-600: var(--tw-primary);
+  --color-blue-700: var(--tw-primary-hover);
+
+  /* ── Green (Success) ── */
+  --color-green-50: #F0FDF4;
+  --color-green-100: var(--tw-success-bg);
+  --color-green-200: #BBF7D0;
+  --color-green-500: var(--tw-success);
+  --color-green-600: var(--tw-success);
+  --color-green-700: #15803D;
+
+  /* ── Red (Error) ── */
+  --color-red-50: #FEF2F2;
+  --color-red-100: var(--tw-error-bg);
+  --color-red-200: #FECACA;
+  --color-red-300: #FCA5A5;
+  --color-red-400: #F87171;
+  --color-red-500: var(--tw-error);
+  --color-red-600: var(--tw-error);
+  --color-red-700: #B91C1C;
+
+  /* ── White (always pure — for text-white on primary buttons) ── */
+  --color-white: #FFFFFF;
+}
+
+/* ── Dark Mode Surface Overrides ── */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: var(--tw-bg-card);
+  }
+
+  .bg-gray-200.text-gray-800 {
+    color: #F8FAFC;
+  }
+
+  .hover\:bg-gray-300:hover {
+    background-color: #475569;
+  }
+
+  .hover\:bg-gray-50:hover {
+    background-color: var(--tw-sidebar-hover);
+  }
+
+  .focus\:ring-blue-500:focus {
+    --tw-ring-color: var(--tw-primary);
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--tw-bg-main);
+  color: var(--tw-text-primary);
   font-family: Arial, Helvetica, sans-serif;
 }
