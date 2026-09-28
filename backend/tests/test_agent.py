@@ -1,6 +1,8 @@
 import pytest
 from httpx import AsyncClient
+from unittest.mock import patch
 from tests.conftest import register_and_login, auth_headers
+from app.providers.llm.mock import MockLLMProvider
 
 
 async def setup_full_company(client: AsyncClient, email: str) -> str:
@@ -17,7 +19,8 @@ async def setup_full_company(client: AsyncClient, email: str) -> str:
 
 
 @pytest.mark.asyncio
-async def test_generate_email(client: AsyncClient):
+@patch("app.services.agent_service.get_llm_provider", return_value=MockLLMProvider())
+async def test_generate_email(mock_llm, client: AsyncClient):
     token = await setup_full_company(client, "agent1@example.com")
     resp = await client.post("/api/v1/agent/generate-email", headers=auth_headers(token), json={
         "recipient_name": "Rahul",
