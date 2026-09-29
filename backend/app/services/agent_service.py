@@ -3,8 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
 from app.repositories.company_repository import get_company_by_user_id
-from app.repositories.signature_repository import get_signature_by_company_id
-from app.repositories.preferences_repository import get_preferences_by_company_id
 from app.schemas.agent import GenerateEmailRequest, GeneratedEmailResponse
 from app.services.llm_service import get_llm_provider
 
@@ -41,9 +39,6 @@ async def generate_email(
 
     social = "\n".join(f"- {sl.platform}: {sl.url}" for sl in company.social_links) or "Not specified"
 
-    sig = await get_signature_by_company_id(db, company.id)
-    signature_text = sig.signature_text if sig and sig.enabled else "Not configured"
-
     context = f"""
 Company Name: {company.name}
 Company Description: {company.description or 'Not specified'}
@@ -66,9 +61,6 @@ Value Propositions:
 
 Social Links:
 {social}
-
-Signature:
-{signature_text}
 """
 
     user_prompt = f"""Write a {request.tone} email to {request.recipient_name} ({request.recipient_email}).

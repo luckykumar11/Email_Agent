@@ -30,10 +30,8 @@ async def get_signature(
 ):
     company = await get_company_by_user_id(db, user.id)
     if not company:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
+        return None
     result = await signature_service.get_sig(db, company.id)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Signature not found")
     return result
 
 

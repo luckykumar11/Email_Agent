@@ -7,11 +7,13 @@ class GeminiProvider(LLMProvider):
 
     async def generate(self, system_prompt: str, user_prompt: str) -> str:
         try:
-            import google.generativeai as genai
+            import importlib
+
+            genai = importlib.import_module("google.generativeai")
 
             genai.configure(api_key=self.api_key)
             model = genai.GenerativeModel(
-                model_name="gemini-2.0-flash",
+                model_name="gemini-3.8-flash",
                 system_instruction=system_prompt,
             )
             response = model.generate_content(user_prompt)

@@ -37,10 +37,8 @@ async def get_config(
 ):
     company = await get_company_by_user_id(db, user.id)
     if not company:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
+        return None
     result = await email_config_service.get_config(db, company.id)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Email configuration not found")
     return result
 
 

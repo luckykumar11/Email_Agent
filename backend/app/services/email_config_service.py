@@ -11,13 +11,13 @@ from app.schemas.email_config import EmailConfigCreate, EmailConfigUpdate, Email
 
 
 def _encrypt_password(password: str) -> str:
-    from app.core.security import hash_password
-    return hash_password(password)
+    from app.core.security import encrypt_password
+    return encrypt_password(password)
 
 
-def _password_matches(plain: str, encrypted: str) -> bool:
-    from app.core.security import verify_password
-    return verify_password(plain, encrypted)
+def _decrypt_password(encrypted: str) -> str:
+    from app.core.security import decrypt_password
+    return decrypt_password(encrypted)
 
 
 def _to_response(config: EmailConfiguration) -> EmailConfigResponse:

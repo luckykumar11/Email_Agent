@@ -13,6 +13,11 @@ class EmailConfigCreate(BaseModel):
     sender_name: Optional[str] = None
     reply_to: Optional[EmailStr] = None
 
+    @field_validator("reply_to", "sender_name", mode="before")
+    @classmethod
+    def empty_to_none(cls, v):
+        return None if v == "" else v
+
     @field_validator("security_type")
     @classmethod
     def validate_security_type(cls, v: str) -> str:
@@ -38,6 +43,11 @@ class EmailConfigUpdate(BaseModel):
     security_type: Optional[str] = None
     sender_name: Optional[str] = None
     reply_to: Optional[EmailStr] = None
+
+    @field_validator("reply_to", "sender_name", mode="before")
+    @classmethod
+    def empty_to_none(cls, v):
+        return None if v == "" else v
 
     @field_validator("security_type")
     @classmethod

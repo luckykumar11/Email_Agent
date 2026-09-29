@@ -62,14 +62,16 @@ async def test_delete_signature(client: AsyncClient):
     resp = await client.delete("/api/v1/signature", headers=auth_headers(token))
     assert resp.status_code == 204
     resp = await client.get("/api/v1/signature", headers=auth_headers(token))
-    assert resp.status_code == 404
+    assert resp.status_code == 200
+    assert resp.json() is None
 
 
 @pytest.mark.asyncio
 async def test_signature_not_found(client: AsyncClient):
     token = await setup_company(client, "sig5@example.com")
     resp = await client.get("/api/v1/signature", headers=auth_headers(token))
-    assert resp.status_code == 404
+    assert resp.status_code == 200
+    assert resp.json() is None
 
 
 @pytest.mark.asyncio

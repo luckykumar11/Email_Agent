@@ -4,7 +4,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from app.models.email_config import EmailConfiguration
-from app.services.email_config_service import _password_matches
+
+
+def _get_password(config: EmailConfiguration) -> str:
+    from app.core.security import decrypt_password
+    return decrypt_password(config.encrypted_password)
 
 
 def send_smtp_email(
@@ -17,11 +21,8 @@ def send_smtp_email(
     format: str = "html",
     cc: list[str] | None = None,
     bcc: list[str] | None = None,
-    password_override: str | None = None,
 ) -> tuple[bool, str]:
-    password = password_override or ""
-    if not password_override:
-        return False, "Password must be provided for SMTP sending"
+    password = _get_password(config)
 
     msg = MIMEMultipart("alternative")
     msg["From"] = f"{sender_name} <{config.email_address}>" if sender_name else config.email_address
@@ -33,6 +34,11 @@ def send_smtp_email(
         msg["Cc"] = ", ".join(cc)
 
     content_type = "html" if format.lower() == "html" else "plain"
+    if content_type == "html":
+        body = body.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        body = body.replace("\n\n", "</p><p>")
+        body = body.replace("\n", "<br>")
+        body = f"<p>{body}</p>"
     msg.attach(MIMEText(body, content_type))
 
     all_recipients = [recipient]
@@ -77,11 +83,8 @@ def send_smtp_email(
 def verify_smtp_connection(
     config: EmailConfiguration,
     recipient: str,
-    password_override: str | None = None,
 ) -> tuple[bool, str]:
-    password = password_override or ""
-    if not password_override:
-        return False, "Password must be provided for SMTP test"
+    password = _get_password(config)
 
     try:
         if config.security_type == "SSL_TLS":

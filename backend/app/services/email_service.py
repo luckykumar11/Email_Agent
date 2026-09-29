@@ -31,8 +31,18 @@ async def send_email(
     if prefs:
         sender_name = prefs.sender_name or config.sender_name
         reply_to = prefs.reply_to or config.reply_to
-        if prefs.default_signature and prefs.append_signature and sig and sig.enabled:
-            request.body = request.body + "\n\n" + sig.signature_text
+        if sig and sig.enabled and sig.append_automatically and prefs.default_signature:
+            sig_lines = sig.signature_text.strip().splitlines()
+            body_lines = request.body.strip().splitlines()
+            already_present = False
+            if sig_lines:
+                last_lines = body_lines[-len(sig_lines):]
+                already_present = all(
+                    a.strip() == b.strip()
+                    for a, b in zip(last_lines, sig_lines)
+                )
+            if not already_present:
+                request.body = request.body + "\n\n" + sig.signature_text
     else:
         sender_name = config.sender_name
         reply_to = config.reply_to
@@ -47,7 +57,6 @@ async def send_email(
         format=email_format,
         cc=[str(c) for c in request.cc] if request.cc else None,
         bcc=[str(b) for b in request.bcc] if request.bcc else None,
-        password_override=None,
     )
 
     history = EmailHistory(

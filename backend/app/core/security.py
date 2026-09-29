@@ -1,12 +1,29 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+from cryptography.fernet import Fernet
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from app.core.config import get_settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def _get_fernet() -> Fernet:
+    settings = get_settings()
+    key = settings.SECRET_KEY.encode()
+    key = key.ljust(32, b"=")[:32]
+    import base64
+    return Fernet(base64.urlsafe_b64encode(key))
+
+
+def encrypt_password(password: str) -> str:
+    return _get_fernet().encrypt(password.encode()).decode()
+
+
+def decrypt_password(encrypted: str) -> str:
+    return _get_fernet().decrypt(encrypted.encode()).decode()
 
 
 def hash_password(password: str) -> str:

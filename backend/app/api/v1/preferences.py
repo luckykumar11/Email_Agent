@@ -30,10 +30,8 @@ async def get_preferences(
 ):
     company = await get_company_by_user_id(db, user.id)
     if not company:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
+        return None
     result = await preferences_service.get_prefs(db, company.id)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Preferences not found")
     return result
 
 
