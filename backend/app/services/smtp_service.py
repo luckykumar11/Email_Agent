@@ -78,6 +78,8 @@ def send_smtp_email(
         return False, f"Network error: {str(e)}"
     except smtplib.SMTPException as e:
         return False, f"SMTP error: {str(e)}"
+    except Exception as e:
+        return False, f"Unexpected error sending email: {str(e)}"
 
 
 def verify_smtp_connection(
@@ -130,3 +132,5 @@ def verify_smtp_connection(
         return False, f"Network error: {str(e)}"
     except smtplib.SMTPException as e:
         return False, f"SMTP error: {str(e)}"
+    except Exception as e:
+        return False, f"Unexpected error during SMTP test: {str(e)}"

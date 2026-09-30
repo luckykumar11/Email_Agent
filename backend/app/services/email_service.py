@@ -1,3 +1,5 @@
+import asyncio
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
@@ -47,17 +49,22 @@ async def send_email(
         sender_name = config.sender_name
         reply_to = config.reply_to
 
-    success, message = send_smtp_email(
-        config=config,
-        sender_name=sender_name or config.sender_name,
-        reply_to=reply_to or config.reply_to,
-        recipient=request.recipient,
-        subject=request.subject,
-        body=request.body,
-        format=email_format,
-        cc=[str(c) for c in request.cc] if request.cc else None,
-        bcc=[str(b) for b in request.bcc] if request.bcc else None,
-    )
+    try:
+        success, message = await asyncio.to_thread(
+            send_smtp_email,
+            config=config,
+            sender_name=sender_name or config.sender_name,
+            reply_to=reply_to or config.reply_to,
+            recipient=request.recipient,
+            subject=request.subject,
+            body=request.body,
+            format=email_format,
+            cc=[str(c) for c in request.cc] if request.cc else None,
+            bcc=[str(b) for b in request.bcc] if request.bcc else None,
+        )
+    except Exception as e:
+        success = False
+        message = f"Failed to send email: {str(e)}"
 
     history = EmailHistory(
         company_id=company.id,
