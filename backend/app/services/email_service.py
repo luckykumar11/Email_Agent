@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,6 +13,8 @@ from app.services.signature_service import get_raw_signature
 from app.services.preferences_service import get_raw_prefs
 from app.services.smtp_service import send_smtp_email
 from app.repositories.email_history_repository import get_email_history
+
+logger = logging.getLogger(__name__)
 
 
 async def send_email(
@@ -63,8 +66,14 @@ async def send_email(
             bcc=[str(b) for b in request.bcc] if request.bcc else None,
         )
     except Exception as e:
+        logger.error("Email send thread failed: %s: %s", type(e).__name__, e)
         success = False
-        message = f"Failed to send email: {str(e)}"
+        message = f"Failed to send email: {type(e).__name__}: {str(e)}"
+
+    if success:
+        logger.info("Email sent to %s via %s", request.recipient, config.smtp_host)
+    else:
+        logger.warning("Email to %s failed: %s", request.recipient, message)
 
     history = EmailHistory(
         company_id=company.id,

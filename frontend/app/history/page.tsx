@@ -32,13 +32,14 @@ export default function HistoryPage() {
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Subject</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Format</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Details</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {loading ? (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
             ) : history?.emails.length === 0 ? (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">No emails sent yet</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">No emails sent yet</td></tr>
             ) : (
               history?.emails.map((email: EmailHistoryItem) => (
                 <tr key={email.id} className="hover:bg-gray-50">
@@ -51,6 +52,17 @@ export default function HistoryPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">{email.format}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {email.failure_reason ? (
+                      <span className="text-xs text-red-600" title={email.failure_reason}>
+                        {email.failure_reason.length > 50
+                          ? email.failure_reason.substring(0, 50) + "..."
+                          : email.failure_reason}
+                      </span>
+                    ) : email.status === "sent" ? (
+                      <span className="text-xs text-green-600">-</span>
+                    ) : null}
+                  </td>
                 </tr>
               ))
             )}

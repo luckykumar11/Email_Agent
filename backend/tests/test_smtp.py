@@ -27,6 +27,7 @@ def make_config(password: str = "testpass") -> EmailConfiguration:
 def test_send_email_success(mock_smtplib):
     config = make_config("password123")
     mock_server = MagicMock()
+    mock_server.sendmail.return_value = {}
     mock_smtplib.SMTP.return_value.__enter__ = lambda s: mock_server
     mock_smtplib.SMTP.return_value.__exit__ = MagicMock(return_value=False)
 
@@ -64,6 +65,7 @@ def test_send_email_decrypts_password():
     config = make_config("mypassword")
     with patch("app.services.smtp_service.smtplib") as mock_smtplib:
         mock_server = MagicMock()
+        mock_server.sendmail.return_value = {}
         mock_smtplib.SMTP.return_value.__enter__ = lambda s: mock_server
         mock_smtplib.SMTP.return_value.__exit__ = MagicMock(return_value=False)
 
@@ -93,6 +95,7 @@ def test_verify_smtp_decrypts_password():
 def test_verify_smtp_connection_success(mock_smtplib):
     config = make_config("pass")
     mock_server = MagicMock()
+    mock_server.sendmail.return_value = {}
     mock_smtplib.SMTP.return_value.__enter__ = lambda s: mock_server
     mock_smtplib.SMTP.return_value.__exit__ = MagicMock(return_value=False)
 
